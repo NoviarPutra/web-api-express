@@ -58,5 +58,37 @@ module.exports = {
       console.log(error);
     }
   },
-  loginUser: (req, res) => {},
+  loginUser: async (req, res) => {
+    const { email, password } = req.body;
+    try {
+      const verifyEmail = await dbConnection.query(
+        `SELECT * FROM users WHERE email = $1`,
+        [email]
+      );
+      const checkPass = bcrypt.compareSync(
+        password,
+        verifyEmail.rows[0].password
+      );
+
+      if (!verifyEmail) {
+        return res.status(404).json({
+          success: false,
+          message: `${email} not registered !`,
+        });
+      } else if (checkPass) {
+        return res.status(200).json({
+          success: true,
+          message: "Login Success",
+          token: null,
+        });
+      } else {
+        return res.status(404).json({
+          success: false,
+          message: "Wrong password",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };
