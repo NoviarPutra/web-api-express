@@ -1,6 +1,6 @@
 const dbConnection = require("../config/db.config");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const generateToken = require("../middleware/generateToken");
 
 module.exports = {
   createNewUser: async (req, res) => {
@@ -17,36 +17,30 @@ module.exports = {
       zip,
     } = req.body;
     try {
-      const validation = await dbConnection.query(
-        `SELECT * FROM users WHERE email = $1`,
-        [email]
-      );
-      if (validation.rows[0]) {
-        return res.status(409).json({
-          success: false,
-          message: `${email} already exists !`,
-        });
+      const isRegistered = await dbConnection("users").where({ email });
+      if (isRegistered[0]) {
+        return res
+          .status(409)
+          .json({ success: false, message: `${email} already exists !` });
       } else {
-        const hash = bcrypt.hashSync(password, 10);
-        const results = await dbConnection.query(
-          `INSERT INTO users(username,firstName,lastName,gender,email,password,phone,address,city,zip) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING username`,
-          [
-            username,
-            firstName,
-            lastName,
-            gender,
-            email,
-            hash,
-            phone,
-            address,
-            city,
-            zip,
-          ]
-        );
-        if (results) {
+        const hashPassword = await bcrypt.hashSync(password, 10);
+        const register = await dbConnection("users").insert({
+          username: username,
+          firstName: firstName,
+          lastName: lastName,
+          gender: gender,
+          email: email,
+          password: hashPassword,
+          phone: phone,
+          address: address,
+          city: city,
+          zip: zip,
+        });
+
+        if (register) {
           return res.status(201).json({
             success: true,
-            message: `${results.rows[0].username} created !`,
+            message: `Success`,
           });
         } else {
           return res.status(400).json({
@@ -56,30 +50,28 @@ module.exports = {
         }
       }
     } catch (error) {
-      console.log(error);
+      return res.status(500).json({
+        success: false,
+        message: error.message,
+      });
     }
   },
   loginUser: async (req, res) => {
     const { email, password } = req.body;
     try {
-      const verifyEmail = await dbConnection.query(
-        `SELECT * FROM users WHERE email = $1`,
-        [email]
-      );
-      const checkPass = bcrypt.compareSync(
-        password,
-        verifyEmail.rows[0].password
-      );
-
-      if (!verifyEmail) {
+      const isRegistered = await dbConnection("users").where({ email });
+      if (!isRegistered[0]) {
         return res.status(404).json({
           success: false,
           message: `${email} not registered !`,
         });
-      } else if (checkPass) {
-        const token = jwt.sign({ email: verifyEmail.rows[0].email }, "secret", {
-          expiresIn: "60m",
-        });
+      }
+      const compare = await bcrypt.compareSync(
+        password,
+        isRegistered[0].password
+      );
+      if (compare) {
+        const token = generateToken(isRegistered[0]);
         return res.status(200).json({
           success: true,
           message: "Login Success",
@@ -88,11 +80,29 @@ module.exports = {
       } else {
         return res.status(404).json({
           success: false,
-          message: "Wrong password",
+          message: "Incorrect password",
         });
       }
     } catch (error) {
-      console.log(error);
+      return res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  },
+  getAllUsers: async (req, res) => {
+    try {
+      const getAllUsers = await dbConnection("users");
+      return res.status(200).json({
+        success: true,
+        message: `Success get all users`,
+        data: getAllUsers,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message,
+      });
     }
   },
 };
