@@ -5,7 +5,6 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 
 const userRouter = require("./src/routes/users.routes");
-const { getAllUsers } = require("./src/api/controllers/users.controllers");
 const PORT = process.env.PORT;
 
 const app = express();
