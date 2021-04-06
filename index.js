@@ -14,6 +14,13 @@ app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Server UP",
+  });
+});
+
 app.use("/api/v1/users", userRouter);
 
 app.listen(PORT, () => {
