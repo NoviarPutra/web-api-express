@@ -27,5 +27,8 @@ module.exports = {
     migrations: {
       directory: __dirname + "/src/api/table/migrations",
     },
+    seeds: {
+      directory: __dirname + "/src/api/table/seeds",
+    },
   },
 };
