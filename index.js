@@ -5,6 +5,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 
 const userRouter = require("./src/routes/users.routes");
+const { getAllUsers } = require("./src/api/controllers/users.controllers");
 const PORT = process.env.PORT;
 
 const app = express();
@@ -14,12 +15,7 @@ app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "Server UP",
-  });
-});
+app.use("/", getAllUsers);
 
 app.use("/api/v1/users", userRouter);
 
