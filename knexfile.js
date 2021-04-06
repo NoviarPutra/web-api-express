@@ -7,10 +7,10 @@ module.exports = {
       filename: "./src/api/data/index.db3",
     },
     migrations: {
-      directory: __dirname + "/src/api/migrations",
+      directory: __dirname + "/src/api/table/migrations",
     },
     seeds: {
-      directory: __dirname + "/src/api/seeds",
+      directory: __dirname + "/src/api/table/seeds",
     },
     useNullAsDefault: true,
   },
@@ -22,8 +22,7 @@ module.exports = {
       max: 10,
     },
     migrations: {
-      tablename: "knex_migration",
-      directory: "/src/api/migrations",
+      directory: "/src/api/table/migrations",
     },
   },
 };
