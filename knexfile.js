@@ -22,7 +22,7 @@ module.exports = {
       max: 10,
     },
     migrations: {
-      directory: "/src/api/table/migrations",
+      directory: __dirname + "/src/api/table/migrations",
     },
   },
 };
