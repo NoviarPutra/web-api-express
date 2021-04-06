@@ -40,11 +40,10 @@ module.exports = {
           city: city,
           zip: zip,
         });
-
         if (reg) {
           return res.status(201).json({
             success: true,
-            message: `Success`,
+            message: `Success insert ${reg[0].email}`,
           });
         } else {
           return res.status(400).json({
@@ -100,7 +99,7 @@ module.exports = {
       return res.status(200).json({
         success: true,
         message: `Success get all users`,
-        data: getAll,
+        data: getAll.rows,
       });
     } catch (error) {
       return res.status(500).json({

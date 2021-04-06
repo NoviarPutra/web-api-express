@@ -15,8 +15,6 @@ app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use("/", getAllUsers);
-
 app.use("/api/v1/users", userRouter);
 
 app.listen(PORT, () => {

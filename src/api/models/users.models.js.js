@@ -2,7 +2,7 @@ const dbConnection = require("../config/db.config");
 
 module.exports = {
   register: async (body) => {
-    return await dbConnection("users").insert(body);
+    return await dbConnection("users").returning("*").insert(body);
   },
   checkEmail: async (email) => {
     return await dbConnection("users").where({ email });
