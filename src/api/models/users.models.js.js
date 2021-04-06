@@ -9,20 +9,9 @@ module.exports = {
       console.log(error);
     }
   },
-  login: async (body) => {
-    try {
-      const login = await dbConnection("user").insert(body);
-      return login;
-    } catch (error) {
-      console.log(error);
-    }
-  },
   checkEmail: async (email) => {
     try {
-      const check = await dbConnection
-        .select("*")
-        .from("users")
-        .whereRaw("id", "=", email);
+      const check = await dbConnection("users").where({ email });
       return check;
     } catch (error) {
       console.log(error);

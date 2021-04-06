@@ -1,6 +1,10 @@
-const dbConnection = require("../config/db.config");
 const bcrypt = require("bcrypt");
 const generateToken = require("../middleware/generateToken");
+const {
+  checkEmail,
+  register,
+  getAllUsers,
+} = require("../models/users.models.js");
 
 module.exports = {
   createNewUser: async (req, res) => {
@@ -17,14 +21,14 @@ module.exports = {
       zip,
     } = req.body;
     try {
-      const isRegistered = await dbConnection("users").where({ email });
+      const isRegistered = await checkEmail(email);
       if (isRegistered[0]) {
         return res
           .status(409)
           .json({ success: false, message: `${email} already exists !` });
       } else {
         const hashPassword = await bcrypt.hashSync(password, 10);
-        const register = await dbConnection("users").insert({
+        const reg = await register({
           username: username,
           firstName: firstName,
           lastName: lastName,
@@ -37,7 +41,7 @@ module.exports = {
           zip: zip,
         });
 
-        if (register) {
+        if (reg) {
           return res.status(201).json({
             success: true,
             message: `Success`,
@@ -59,7 +63,7 @@ module.exports = {
   loginUser: async (req, res) => {
     const { email, password } = req.body;
     try {
-      const isRegistered = await dbConnection("users").where({ email });
+      const isRegistered = await checkEmail(email);
       if (!isRegistered[0]) {
         return res.status(404).json({
           success: false,
@@ -92,11 +96,11 @@ module.exports = {
   },
   getAllUsers: async (req, res) => {
     try {
-      const getAllUsers = await dbConnection("users");
+      const getAll = await getAllUsers();
       return res.status(200).json({
         success: true,
         message: `Success get all users`,
-        data: getAllUsers,
+        data: getAll,
       });
     } catch (error) {
       return res.status(500).json({
