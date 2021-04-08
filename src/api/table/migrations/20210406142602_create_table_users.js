@@ -1,6 +1,6 @@
 exports.up = function (knex) {
   return knex.schema.raw(`
-  CREATE TYPE gender AS ENUM ('FEMALE','MALE')
+  CREATE TYPE gender AS ENUM ('FEMALE','MALE');
   CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(100) NOT NULL,
