@@ -10,8 +10,8 @@ module.exports = {
   createNewUser: async (req, res) => {
     const {
       username,
-      firstName,
-      lastName,
+      firstname,
+      lastname,
       gender,
       email,
       password,
@@ -30,8 +30,8 @@ module.exports = {
         const hashPassword = await bcrypt.hashSync(password, 10);
         const reg = await register({
           username: username,
-          firstName: firstName,
-          lastName: lastName,
+          firstname: firstname,
+          lastname: lastname,
           gender: gender,
           email: email,
           password: hashPassword,
