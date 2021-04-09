@@ -7,7 +7,7 @@ module.exports = {
   checkEmail: async (email) => {
     return await dbConnection("users").where({ email });
   },
-  getAllUsers: async () => {
+  findAllUsers: async () => {
     return await dbConnection.raw("SELECT * FROM users");
   },
 };

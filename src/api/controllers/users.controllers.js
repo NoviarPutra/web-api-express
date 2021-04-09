@@ -3,7 +3,7 @@ const generateToken = require("../middleware/generateToken");
 const {
   checkEmail,
   register,
-  getAllUsers,
+  findAllUsers,
 } = require("../models/users.models.js");
 
 module.exports = {
@@ -93,9 +93,9 @@ module.exports = {
       });
     }
   },
-  getAllUsers: async (req, res) => {
+  findAllUsers: async (req, res) => {
     try {
-      const getAll = await getAllUsers();
+      const getAll = await findAllUsers();
       return res.status(200).json({
         success: true,
         message: `Success get all users`,
